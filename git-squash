@@ -1,0 +1,39 @@
+#!/bin/sh
+
+Help()
+{
+  # Display Help
+   echo "Helper command to squash a number of commits then force push with lease."
+   echo
+   echo "Syntax: git squash [-h|m|n]"
+   echo "options:"
+   echo "h     Print this Help."
+   echo "m     Message to commit."
+   echo "n     Number of commits to squash."
+   echo
+}
+
+commitsNumber=""
+message=""
+
+while getopts ":hmn:" option; do
+  case $option in
+    h) Help
+      exit;;
+    n) commitsNumber=OPTARG;;
+    m) message=OPTARG;;
+    \?) # Invalid option
+      echo "Error: Invalid option"
+      exit;;
+  esac
+done
+
+if [ -n "$commitsNumber" ] && [ -n "$message" ]
+then
+    git reset --soft HEAD~$commitsNumber
+    git add -A
+    git commit -m "$message"
+    git push --force-with-lease
+else
+    echo "Options not provided"
+fi
