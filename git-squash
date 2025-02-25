@@ -16,12 +16,12 @@ Help()
 commitsNumber=""
 message=""
 
-while getopts ":hmn:" option; do
+while getopts ":h:m:n:" option; do
   case $option in
     h) Help
       exit;;
-    n) commitsNumber=OPTARG;;
-    m) message=OPTARG;;
+    m) message=${OPTARG};;
+    n) commitsNumber=${OPTARG};;
     \?) # Invalid option
       echo "Error: Invalid option"
       exit;;
@@ -30,10 +30,12 @@ done
 
 if [ -n "$commitsNumber" ] && [ -n "$message" ]
 then
-    git reset --soft HEAD~$commitsNumber
+    git reset --soft HEAD~"$commitsNumber"
     git add -A
     git commit -m "$message"
     git push --force-with-lease
 else
+    echo "$commitsNumber"
+    echo "$message"
     echo "Options not provided"
 fi
